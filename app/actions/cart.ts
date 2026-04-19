@@ -23,7 +23,7 @@ export async function addToCart(productId: string, variantId: string, quantity: 
     })
 
   if (error) throw error
-  revalidateTag('cart')
+  revalidateTag('cart', 'max')
 }
 
 export async function removeFromCart(cartItemId: string) {
@@ -34,7 +34,7 @@ export async function removeFromCart(cartItemId: string) {
     .eq('id', cartItemId)
 
   if (error) throw error
-  revalidateTag('cart')
+  revalidateTag('cart', 'max')
 }
 
 export async function updateCartQuantity(cartItemId: string, quantity: number) {
@@ -49,7 +49,7 @@ export async function updateCartQuantity(cartItemId: string, quantity: number) {
     .eq('id', cartItemId)
 
   if (error) throw error
-  revalidateTag('cart')
+  revalidateTag('cart', 'max')
 }
 
 export async function getCart() {
@@ -92,5 +92,5 @@ export async function clearCart() {
     .eq('user_id', user.id)
 
   if (error) throw error
-  revalidateTag('cart')
+  revalidateTag('cart', 'max')
 }

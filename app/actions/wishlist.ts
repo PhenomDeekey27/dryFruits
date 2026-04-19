@@ -19,7 +19,7 @@ export async function addToWishlist(productId: string) {
     })
 
   if (error && error.code !== '23505') throw error // Ignore duplicate error
-  revalidateTag('wishlist')
+  revalidateTag('wishlist', 'max')
 }
 
 export async function removeFromWishlist(productId: string) {
@@ -35,7 +35,7 @@ export async function removeFromWishlist(productId: string) {
     .eq('product_id', productId)
 
   if (error) throw error
-  revalidateTag('wishlist')
+  revalidateTag('wishlist', 'max')
 }
 
 export async function getWishlist() {

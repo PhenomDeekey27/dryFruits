@@ -19,7 +19,7 @@ export async function createCollection(name: string) {
     .single()
 
   if (error) throw error
-  revalidateTag('collections')
+  revalidateTag('collections', 'max')
   return data
 }
 
@@ -33,7 +33,7 @@ export async function addToCollection(collectionId: string, productId: string) {
     })
 
   if (error && error.code !== '23505') throw error // Ignore duplicate
-  revalidateTag('collections')
+  revalidateTag('collections', 'max')
 }
 
 export async function removeFromCollection(collectionId: string, productId: string) {
@@ -45,7 +45,7 @@ export async function removeFromCollection(collectionId: string, productId: stri
     .eq('product_id', productId)
 
   if (error) throw error
-  revalidateTag('collections')
+  revalidateTag('collections', 'max')
 }
 
 export async function deleteCollection(collectionId: string) {
@@ -56,7 +56,7 @@ export async function deleteCollection(collectionId: string) {
     .eq('id', collectionId)
 
   if (error) throw error
-  revalidateTag('collections')
+  revalidateTag('collections', 'max')
 }
 
 export async function getCollections() {
