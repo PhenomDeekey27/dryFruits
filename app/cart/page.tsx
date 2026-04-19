@@ -25,6 +25,22 @@ interface CartItemType {
   }
 }
 
+interface CartItemQueryRow {
+  id: string
+  quantity: number
+  products: Array<{
+    id: string
+    name: string
+    category: string
+    product_images: Array<{ image_url: string }>
+  }>
+  product_variants: Array<{
+    id: string
+    weight: string
+    price: number
+  }>
+}
+
 interface SuggestedProduct {
   id: string
   name: string
@@ -72,7 +88,16 @@ export default function CartPage() {
           `)
           .eq('user_id', user.id)
 
-        if (data) setCartItems(data)
+        if (data) {
+          const normalizedCartItems = (data as CartItemQueryRow[]).map((item) => ({
+            id: item.id,
+            quantity: item.quantity,
+            products: item.products[0],
+            product_variants: item.product_variants[0],
+          }))
+
+          setCartItems(normalizedCartItems)
+        }
 
         // Fetch suggested products
         const { data: products } = await supabase
