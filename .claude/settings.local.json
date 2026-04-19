@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx tsc:*)",
+      "Bash(npm run:*)",
+      "Bash(cat \"E:/Custom Projects/dryfruitswebsite/components/\"*)",
+      "Bash(ls \"E:/Custom Projects/dryfruitswebsite/supabase/\"*)",
+      "Bash(cat \"E:/Custom Projects/dryfruitswebsite/app/actions/\"*.ts)",
+      "Bash(curl:*)",
+      "Bash(xargs grep *)"
+    ]
+  }
+}
