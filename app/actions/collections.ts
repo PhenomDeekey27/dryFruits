@@ -3,6 +3,26 @@
 import { createClient } from "@/lib/supabase";
 import { revalidateTag } from "next/cache";
 
+interface Product {
+  id: string;
+  name: string;
+  category: string;
+  product_variants: Array<{ id: string; price: number }>;
+  product_images: Array<{ image_url: string }>;
+}
+
+interface CollectionItem {
+  id: string;
+  products: Product;
+}
+
+interface Collection {
+  id: string;
+  name: string;
+  created_at: string;
+  collection_items: CollectionItem[];
+}
+
 export async function createCollection(name: string) {
   const supabase = createClient();
   const {
@@ -79,7 +99,7 @@ export async function getCollections() {
   return data || [];
 }
 
-export async function getCollection(collectionId: string) {
+export async function getCollection(collectionId: string): Promise<Collection | null> {
   const supabase = createClient();
 
   const { data } = await supabase
@@ -104,5 +124,15 @@ export async function getCollection(collectionId: string) {
     .eq("id", collectionId)
     .single();
 
-  return data;
+  if (!data) return null;
+
+  return {
+    ...data,
+    collection_items: (data.collection_items || [])
+      .map((item) => ({
+        ...item,
+        products: item.products?.[0],
+      }))
+      .filter((item): item is CollectionItem => Boolean(item.products)),
+  };
 }
