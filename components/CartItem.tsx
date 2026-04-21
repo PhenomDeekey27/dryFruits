@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { updateCartQuantity, removeFromCart } from '@/app/actions/cart'
 
@@ -21,6 +22,7 @@ interface CartItemProps {
 }
 
 export default function CartItem({ id, product, variant, quantity }: CartItemProps) {
+  const router = useRouter()
   const [qty, setQty] = useState(quantity)
   const [isRemoving, setIsRemoving] = useState(false)
 
@@ -28,11 +30,13 @@ export default function CartItem({ id, product, variant, quantity }: CartItemPro
     if (newQty <= 0) return
     setQty(newQty)
     await updateCartQuantity(id, newQty)
+    router.refresh()
   }
 
   const handleRemove = async () => {
     setIsRemoving(true)
     await removeFromCart(id)
+    router.refresh()
   }
 
   const image = product.product_images?.[0]?.image_url
