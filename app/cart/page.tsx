@@ -28,53 +28,55 @@ export default async function CartPage() {
     )
   }
 
-  const [cartResult, productsResult] = await Promise.all([
-    supabase
-      .from('cart_items')
-      .select(`
-        id,
-        quantity,
-        products:product_id (
-          id,
-          name,
-          category,
-          product_images (image_url)
-        ),
-        product_variants:variant_id (
-          id,
-          weight,
-          price
-        )
-      `)
-      .eq('user_id', user.id),
+  // Step 1: plain cart_items rows — no FK joins needed
+  const { data: rawCart } = await supabase
+    .from('cart_items')
+    .select('id, quantity, product_id, variant_id')
+    .eq('user_id', user.id)
+
+  const cartRows = rawCart ?? []
+
+  // Step 2: fetch products and variants in parallel using the collected IDs
+  const productIds = [...new Set(cartRows.map(r => r.product_id))]
+  const variantIds = [...new Set(cartRows.map(r => r.variant_id).filter(Boolean))]
+
+  const [productsRes, variantsRes, suggestedRes] = await Promise.all([
+    productIds.length > 0
+      ? supabase
+          .from('products')
+          .select('id, name, category, product_images (image_url)')
+          .in('id', productIds)
+      : Promise.resolve({ data: [] }),
+    variantIds.length > 0
+      ? supabase
+          .from('product_variants')
+          .select('id, weight, price')
+          .in('id', variantIds)
+      : Promise.resolve({ data: [] }),
     supabase
       .from('products')
       .select('id, name, category, product_variants (price), product_images (image_url)')
       .limit(4),
   ])
 
-  type RawCartItem = {
-    id: string
-    quantity: number
-    products: { id: string; name: string; category: string; product_images: { image_url: string }[] } | { id: string; name: string; category: string; product_images: { image_url: string }[] }[]
-    product_variants: { id: string; weight: string; price: number } | { id: string; weight: string; price: number }[]
-  }
+  const productMap = Object.fromEntries((productsRes.data ?? []).map(p => [p.id, p]))
+  const variantMap = Object.fromEntries((variantsRes.data ?? []).map(v => [v.id, v]))
 
-  const cartItems = (cartResult.data ?? [])
-    .map((item) => {
-      const raw = item as unknown as RawCartItem
-      const products = Array.isArray(raw.products) ? raw.products[0] : raw.products
-      const product_variants = Array.isArray(raw.product_variants) ? raw.product_variants[0] : raw.product_variants
-      return { id: raw.id, quantity: raw.quantity, products, product_variants }
-    })
-    .filter((item) => item.products && item.product_variants) as {
-      id: string
-      quantity: number
-      products: { id: string; name: string; category: string; product_images: { image_url: string }[] }
-      product_variants: { id: string; weight: string; price: number }
-    }[]
+  const cartItems = cartRows
+    .map(row => ({
+      id: row.id,
+      quantity: row.quantity,
+      products: productMap[row.product_id] as {
+        id: string; name: string; category: string
+        product_images: { image_url: string }[]
+      },
+      product_variants: variantMap[row.variant_id] as {
+        id: string; weight: string; price: number
+      },
+    }))
+    .filter(item => item.products && item.product_variants)
 
-  const suggestedProducts = (productsResult.data ?? []).map((p) => ({
+  const suggestedProducts = (suggestedRes.data ?? []).map(p => ({
     id: p.id,
     name: p.name,
     category: p.category,
