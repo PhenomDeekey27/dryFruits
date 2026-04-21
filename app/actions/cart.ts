@@ -29,7 +29,7 @@ export async function addToCart(
     },
   );
 
-  if (error) throw error;
+  if (error) throw new Error(`[${error.code}] ${error.message}${error.hint ? ` — ${error.hint}` : ''}`);
   revalidateTag("cart", "max");
 }
 

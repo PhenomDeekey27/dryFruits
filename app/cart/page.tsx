@@ -8,6 +8,7 @@ import Footer from "@/components/Footer";
 import CartItem from "@/components/CartItem";
 import CartSummary from "@/components/CartSummary";
 import { createClient } from "@/lib/supabase";
+import { getCart } from "@/app/actions/cart";
 
 interface CartItemType {
   id: string;
@@ -72,40 +73,17 @@ export default function CartPage() {
           return;
         }
 
-        // Fetch cart items
-        const { data } = await supabase
-          .from("cart_items")
-          .select(
-            `
-            id,
-            quantity,
-            products:product_id (
-              id,
-              name,
-              category,
-              product_images (image_url)
-            ),
-            product_variants:variant_id (
-              id,
-              weight,
-              price
-            )
-          `,
-          )
-          .eq("user_id", user.id);
-
-        if (data) {
-          const normalizedCartItems = (data as CartItemQueryRow[]).map(
-            (item) => ({
-              id: item.id,
-              quantity: item.quantity,
-              products: item.products[0],
-              product_variants: item.product_variants[0],
-            }),
-          );
-
-          setCartItems(normalizedCartItems);
-        }
+        // Use server action for cart items — avoids schema cache issues
+        const cartData = await getCart();
+        const normalizedCartItems = cartData
+          .map((item) => ({
+            id: item.id,
+            quantity: item.quantity,
+            products: Array.isArray(item.products) ? item.products[0] : item.products,
+            product_variants: Array.isArray(item.product_variants) ? item.product_variants[0] : item.product_variants,
+          }))
+          .filter((item) => item.products && item.product_variants);
+        setCartItems(normalizedCartItems as CartItemType[]);
 
         // Fetch suggested products
         const { data: products } = await supabase

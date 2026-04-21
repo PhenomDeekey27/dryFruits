@@ -64,9 +64,11 @@ export default function ProductDetailClient({ product, relatedProducts, collecti
       setCartMsg('Added to cart!')
       setTimeout(() => setCartMsg(null), 3000)
     } catch (err) {
-      const msg = err instanceof Error ? err.message : String(err)
-      setCartMsg(msg.includes('logged in') ? 'Please sign in to add items to cart' : `Error: ${msg}`)
-      setTimeout(() => setCartMsg(null), 5000)
+      const e = err as { message?: string; code?: string }
+      const msg = e?.message ?? String(err)
+      const code = e?.code ? ` [${e.code}]` : ''
+      setCartMsg(msg.includes('logged in') ? 'Please sign in to add items to cart' : `Failed to add to cart${code}: ${msg}`)
+      setTimeout(() => setCartMsg(null), 8000)
     } finally {
       setIsAddingToCart(false)
     }
