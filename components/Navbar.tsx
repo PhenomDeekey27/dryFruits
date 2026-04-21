@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
 import { getMyProfile } from '@/app/actions/profile'
 import { logout } from '@/app/actions/auth'
@@ -23,10 +23,12 @@ interface SearchResult {
 
 export default function Navbar() {
   const router = useRouter()
+  const pathname = usePathname()
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [profile, setProfile] = useState<UserProfile | null | 'loading'>('loading')
   const [userDropdownOpen, setUserDropdownOpen] = useState(false)
+  const [cartCount, setCartCount] = useState(0)
 
   const [searchOpen, setSearchOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
@@ -50,13 +52,28 @@ export default function Navbar() {
     }
     load()
 
-    // Re-sync when auth state changes (login / logout in the same tab)
     const supabase = createClient()
     const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {
       load()
     })
     return () => subscription.unsubscribe()
   }, [])
+
+  // Fetch cart count — re-runs on every navigation so badge stays in sync
+  useEffect(() => {
+    async function fetchCount() {
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) { setCartCount(0); return }
+      const { data } = await supabase
+        .from('cart_items')
+        .select('quantity')
+        .eq('user_id', user.id)
+      const total = (data ?? []).reduce((sum, row) => sum + (row.quantity ?? 1), 0)
+      setCartCount(total)
+    }
+    fetchCount()
+  }, [pathname])
 
   // Search debounce
   useEffect(() => {
@@ -193,7 +210,11 @@ export default function Navbar() {
               <line x1="3" y1="6" x2="21" y2="6"/>
               <path d="M16 10a4 4 0 0 1-8 0"/>
             </svg>
-            <span className="absolute top-1 right-1 w-4 h-4 bg-[#775a19] text-white text-[9px] font-bold rounded-full flex items-center justify-center">0</span>
+            {cartCount > 0 && (
+              <span className="absolute top-1 right-1 w-4 h-4 bg-[#775a19] text-white text-[9px] font-bold rounded-full flex items-center justify-center">
+                {cartCount > 99 ? '99+' : cartCount}
+              </span>
+            )}
           </Link>
 
           {/* User button — desktop only, hidden while loading */}
