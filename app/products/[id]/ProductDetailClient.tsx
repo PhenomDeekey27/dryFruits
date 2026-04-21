@@ -63,9 +63,10 @@ export default function ProductDetailClient({ product, relatedProducts, collecti
       await addToCart(product.id, selectedVariant.id, 1)
       setCartMsg('Added to cart!')
       setTimeout(() => setCartMsg(null), 3000)
-    } catch {
-      setCartMsg('Please sign in to add items to cart')
-      setTimeout(() => setCartMsg(null), 3000)
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err)
+      setCartMsg(msg.includes('logged in') ? 'Please sign in to add items to cart' : `Error: ${msg}`)
+      setTimeout(() => setCartMsg(null), 5000)
     } finally {
       setIsAddingToCart(false)
     }
