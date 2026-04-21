@@ -184,7 +184,7 @@ export default function ProductsClient() {
           <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-[#1b1c1c]" style={{ fontFamily: 'Epilogue, sans-serif' }}>
             The Pantry Archive
           </h1>
-          <p className="mt-3 text-[#74554b] font-medium max-w-xl mx-auto text-sm md:text-base" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+          <p className="mt-3 text-[#504441] font-medium max-w-xl mx-auto text-sm md:text-base" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
             Sourced from sun-drenched orchards and ancient groves. Discover the world's finest dry fruits, hand-selected for the modern kitchen.
           </p>
         </div>

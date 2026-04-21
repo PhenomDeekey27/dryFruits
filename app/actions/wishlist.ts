@@ -1,10 +1,10 @@
 "use server";
 
-import { createClient } from "@/lib/supabase";
+import { createServerSupabaseClient } from "@/lib/supabase-server";
 import { revalidateTag } from "next/cache";
 
 export async function addToWishlist(productId: string) {
-  const supabase = createClient();
+  const supabase = await createServerSupabaseClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -23,7 +23,7 @@ export async function addToWishlist(productId: string) {
 }
 
 export async function removeFromWishlist(productId: string) {
-  const supabase = createClient();
+  const supabase = await createServerSupabaseClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -41,7 +41,7 @@ export async function removeFromWishlist(productId: string) {
 }
 
 export async function getWishlist() {
-  const supabase = createClient();
+  const supabase = await createServerSupabaseClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -69,7 +69,7 @@ export async function getWishlist() {
 }
 
 export async function isProductInWishlist(productId: string): Promise<boolean> {
-  const supabase = createClient();
+  const supabase = await createServerSupabaseClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();

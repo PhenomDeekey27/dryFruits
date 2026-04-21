@@ -1,6 +1,6 @@
 "use server";
 
-import { createClient } from "@/lib/supabase";
+import { createServerSupabaseClient } from "@/lib/supabase-server";
 import { revalidateTag } from "next/cache";
 
 interface Product {
@@ -24,7 +24,7 @@ interface Collection {
 }
 
 export async function createCollection(name: string) {
-  const supabase = createClient();
+  const supabase = await createServerSupabaseClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -46,7 +46,7 @@ export async function createCollection(name: string) {
 }
 
 export async function addToCollection(collectionId: string, productId: string) {
-  const supabase = createClient();
+  const supabase = await createServerSupabaseClient();
   const { error } = await supabase.from("collection_items").insert({
     collection_id: collectionId,
     product_id: productId,
@@ -60,7 +60,7 @@ export async function removeFromCollection(
   collectionId: string,
   productId: string,
 ) {
-  const supabase = createClient();
+  const supabase = await createServerSupabaseClient();
   const { error } = await supabase
     .from("collection_items")
     .delete()
@@ -72,7 +72,7 @@ export async function removeFromCollection(
 }
 
 export async function deleteCollection(collectionId: string) {
-  const supabase = createClient();
+  const supabase = await createServerSupabaseClient();
   const { error } = await supabase
     .from("collections")
     .delete()
@@ -83,7 +83,7 @@ export async function deleteCollection(collectionId: string) {
 }
 
 export async function getCollections() {
-  const supabase = createClient();
+  const supabase = await createServerSupabaseClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -100,7 +100,7 @@ export async function getCollections() {
 }
 
 export async function getCollection(collectionId: string): Promise<Collection | null> {
-  const supabase = createClient();
+  const supabase = await createServerSupabaseClient();
 
   const { data } = await supabase
     .from("collections")

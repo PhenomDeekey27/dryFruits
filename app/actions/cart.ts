@@ -1,6 +1,6 @@
 "use server";
 
-import { createClient } from "@/lib/supabase";
+import { createServerSupabaseClient } from "@/lib/supabase-server";
 import { revalidateTag } from "next/cache";
 
 export async function addToCart(
@@ -8,7 +8,7 @@ export async function addToCart(
   variantId: string,
   quantity: number = 1,
 ) {
-  const supabase = createClient();
+  const supabase = await createServerSupabaseClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -34,7 +34,7 @@ export async function addToCart(
 }
 
 export async function removeFromCart(cartItemId: string) {
-  const supabase = createClient();
+  const supabase = await createServerSupabaseClient();
   const { error } = await supabase
     .from("cart_items")
     .delete()
@@ -45,7 +45,7 @@ export async function removeFromCart(cartItemId: string) {
 }
 
 export async function updateCartQuantity(cartItemId: string, quantity: number) {
-  const supabase = createClient();
+  const supabase = await createServerSupabaseClient();
   if (quantity <= 0) {
     return removeFromCart(cartItemId);
   }
@@ -60,7 +60,7 @@ export async function updateCartQuantity(cartItemId: string, quantity: number) {
 }
 
 export async function getCart() {
-  const supabase = createClient();
+  const supabase = await createServerSupabaseClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -92,7 +92,7 @@ export async function getCart() {
 }
 
 export async function clearCart() {
-  const supabase = createClient();
+  const supabase = await createServerSupabaseClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
