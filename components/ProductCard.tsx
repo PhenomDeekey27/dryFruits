@@ -1,6 +1,12 @@
+'use client'
+
+import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import type { PublicProduct } from '@/lib/products'
+import { addToCart } from '@/app/actions/cart'
+import { useToast } from '@/components/Toast'
 
 const BADGE_STYLES: Record<string, string> = {
   BESTSELLER: 'bg-[#fcf9f8]/90 text-[#775a19]',
@@ -10,6 +16,36 @@ const BADGE_STYLES: Record<string, string> = {
 
 export default function ProductCard({ product }: { product: PublicProduct }) {
   const stars = Math.round(product.rating)
+  const router = useRouter()
+  const { toast } = useToast()
+  const [adding, setAdding] = useState(false)
+
+  async function handleQuickAdd(e: React.MouseEvent) {
+    e.preventDefault()
+    e.stopPropagation()
+
+    if (!product.variantId) {
+      router.push(`/products/${product.id}`)
+      return
+    }
+
+    setAdding(true)
+    try {
+      await addToCart(product.id, product.variantId, 1)
+      toast('Added to cart')
+      router.refresh()
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : ''
+      if (msg.includes('Must be logged in')) {
+        toast('Please sign in to add to cart', 'error')
+        router.push('/login')
+      } else {
+        toast('Could not add to cart', 'error')
+      }
+    } finally {
+      setAdding(false)
+    }
+  }
 
   return (
     <Link href={`/products/${product.id}`}>
@@ -37,12 +73,11 @@ export default function ProductCard({ product }: { product: PublicProduct }) {
 
           {/* Quick Add — appears on hover */}
           <button
-            onClick={(e) => {
-              e.preventDefault()
-              // Quick add functionality can be added here
-            }}
-            className="absolute bottom-3 left-3 right-3 bg-[#1b1c1c]/90 backdrop-blur-sm text-white py-3 rounded-lg opacity-0 translate-y-3 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 font-semibold text-[13px] hover:bg-[#74554b] active:scale-95">
-            Quick Add
+            onClick={handleQuickAdd}
+            disabled={adding}
+            className="absolute bottom-3 left-3 right-3 bg-[#1b1c1c]/90 backdrop-blur-sm text-white py-3 rounded-lg opacity-0 translate-y-3 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 font-semibold text-[13px] hover:bg-[#74554b] active:scale-95 disabled:opacity-60"
+          >
+            {adding ? 'Adding…' : 'Quick Add'}
           </button>
         </div>
 

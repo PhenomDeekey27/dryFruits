@@ -10,6 +10,7 @@ export type PublicProduct = {
   badge?: 'BESTSELLER' | 'NEW' | 'LIMITED'
   rating: number
   reviews: number
+  variantId?: string
 }
 
 export type PublicCategory = {
@@ -130,6 +131,7 @@ export async function getFeaturedProducts(): Promise<PublicProduct[]> {
       badge: undefined,
       rating: 4.8,
       reviews: Math.floor(Math.random() * 200) + 10,
+      variantId: p.product_variants?.[0]?.id,
     }))
   } catch {
     return MOCK_PRODUCTS

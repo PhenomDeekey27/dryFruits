@@ -2,25 +2,25 @@ import Image from 'next/image'
 
 const testimonials = [
   {
-    quote: 'The Medjool dates from Annamalai are more than a snack; they are a decadent experience. The texture is creamy, like caramel butter. I gift these to everyone.',
-    name: 'Julian V.',
-    role: 'Pastry Chef, NY',
+    quote: 'Ordered Medjool dates for the first time and was genuinely surprised by the quality. They arrived fresh, well-packed, and tasted absolutely wonderful. Will definitely reorder.',
+    name: 'Priya S.',
+    role: 'Home Baker, Bangalore',
     avatarUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDqcvZgPqOOtjgU9A84e6eyYdmM_vRtiKuCZDCHFEjzoq6ukpMUfRFcfEO785M2i_mpeAWtYyk0yXSiOFT8qbXi8ehNf0U7lXLe5qauBcDRgUdtIJ2WhjXJmeyVe4czMxEBqmzDtJME6cKnM5ijObkAyf8q1HN3nCZb2bYQmHwbXkzBXYr0VHKYTQQeV06ny4CkqwAcAtOfIV2Bjf1La9Nv4am50xI7aEtTYiiM1DSFGKqRuWp2TUQ9_Jq2t08BwuxF1vAEEucgolZK',
-    offset: false,
+    stagger: 'stagger-1',
   },
   {
-    quote: "I've traveled the Silk Road, and I haven't found quality this consistent outside of local markets in Iran. This is the gold standard for dry fruits.",
-    name: 'Elena R.',
-    role: 'Gastronomy Critic',
-    avatarUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC8qlMpgLYmyNO5p8s-h9M6j-WH_KjW5PGKUZWhdWl1uJR28_CIXdZRR0MtUPaY9j1BWdBOWienv1wBdl0X5XEmfs1hxBgxClkYKmje3ajGK7TA5mX7ZzoSAbJNgOmgfbD-UnMvFIETCXUTCB_aDglE1qOEqQHw2it9o3VfsO79O3Zt7FVkjm9faljvIJLR5PWdy6DaBKQDuSPF8w1c6YfzQOaa2dh-F17ZEdjgwwXPozN_4UtcA-D385GpF1OwE7_uy0s2nyu-HPAW',
-    offset: true,
+    quote: "Best dry fruits I've bought online. The cashews and almonds are fresh, not stale like other brands. Great value for money and fast delivery too.",
+    name: 'Rahul M.',
+    role: 'Fitness Enthusiast, Chennai',
+    avatarUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC8qlMpgLYmyNO5p8s-h9M6j-WH_KjW5PGKUZWhdWl1uJR28_CIXdZRR0MtUPaY9j1BWdBOWienv1wBdl0X5XEmfs1hxBgxClkYKmje3ajGK7TA5mX7ZzoSAbJNgOmgfbD-UnMvFIETCXUTCB_aDglE1qQHw2it9o3VfsO79O3Zt7FVkjm9faljvIJLR5PWdy6DaBKQDuSPF8w1c6YfzQOaa2dh-F17ZEdjgwwXPozN_4UtcA-D385GpF1OwE7_uy0s2nyu-HPAW',
+    stagger: 'stagger-3',
   },
   {
-    quote: "Packaging matters. Opening an Annamalai shipment feels like unboxing a rare artifact. It's my go-to gift for discerning clients and food lovers.",
-    name: 'Markus T.',
-    role: 'Design Director',
+    quote: "I gift Annamalai dry fruits to family during festivals. The packaging is neat and the quality is consistently excellent. My go-to for gifting and daily snacking.",
+    name: 'Anitha K.',
+    role: 'Teacher, Coimbatore',
     avatarUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCusXE0vJGbPbsklWzAkbo8D23xu6Jk1Iu1vSqmg_Ny0HUVJsSb_hXxhEz5zM-It2TTj2gIWjXt2T2bQOw19YA2JBj1Dw7JxdRXL7-BEBkfuXuZhwRrlkfUApa213retstyNUIorURzoNGZz8aEArLelH5MMJ116cO5FwhB0SzzZ3QP47g6SOb0gsL-8OXvnoNYZFwyBe8eku8k8uoEwYy7z8PF5CJ9BEDv7AuaRK0LOg9NgROggVMc6ho',
-    offset: false,
+    stagger: 'stagger-5',
   },
 ]
 
@@ -40,29 +40,27 @@ export default function Testimonials() {
     <section className="py-24 bg-[#f6f3f2] overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 md:px-8">
         {/* Header */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-16 animate-fade-in">
           <span className="text-[#775a19] font-semibold uppercase tracking-[0.22em] text-[11px] mb-3 block">
-            Community
+            Customer Reviews
           </span>
           <h2
             className="text-[36px] md:text-[42px] font-bold tracking-tight text-[#1b1c1c] mb-4"
             style={{ fontFamily: 'Epilogue, sans-serif' }}
           >
-            Agrarian Chronicles
+            What Our Customers Say
           </h2>
           <p className="text-[#504441] max-w-md mx-auto text-[16px] leading-relaxed">
-            Stories from our community of connoisseurs and culinary enthusiasts.
+            Real stories from people who love our fresh dates and dry fruits.
           </p>
         </div>
 
         {/* Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
-          {testimonials.map((t, i) => (
+          {testimonials.map((t) => (
             <div
               key={t.name}
-              className={`relative bg-[#ffffff] rounded-2xl p-8 shadow-[0_4px_24px_rgba(27,28,28,0.06)] ${
-                t.offset ? 'md:translate-y-6' : ''
-              }`}
+              className={`animate-fade-in ${t.stagger} relative bg-white rounded-2xl p-8 shadow-[0_4px_24px_rgba(27,28,28,0.06)] hover:-translate-y-2 hover:shadow-[0_12px_40px_rgba(27,28,28,0.12)] transition-all duration-300 cursor-default`}
             >
               <QuoteIcon />
 

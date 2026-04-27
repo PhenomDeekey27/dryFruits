@@ -11,12 +11,12 @@ export default function SignupPage() {
 
       <main className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 rounded-2xl overflow-hidden bg-white shadow-2xl shadow-[#1b1c1c]/5">
 
-        {/* Left: Editorial panel */}
+        {/* Left: Brand panel */}
         <section className="hidden md:block relative min-h-[720px] overflow-hidden">
           <div className="absolute inset-0">
             <Image
               src="https://lh3.googleusercontent.com/aida-public/AB6AXuCjSHOa7H7AdoSe0fr5twLE7o3PvzPOPHXBoWrbk5-Nl4M3814Fbx5CUYQWG4TX77NDzfaDNa54qA-P3PZvmDuJu6VDzFYq3ZUlQl-VURtNCwuz2Z09c_2-pYU_qBSX5TvlXqP72y1djJlsWCSjbqEmoDhbb565gf0m_E7UuzWttUKedJ9Wzag7Z9YpoYOD3t2LA_lb1mjNIckQ6_htAkooQ3agC6Fitjg3Tx7jeDev2iDS1bDzgl5YtUIIDeDktM1zScoVs95pteNj"
-              alt="Premium dried fruits editorial"
+              alt="Premium dates and dry fruits"
               fill
               className="object-cover"
               priority
@@ -28,16 +28,16 @@ export default function SignupPage() {
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ffdea5" strokeWidth="2">
                 <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
               </svg>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#ffdea5]">Established 1924</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#ffdea5]">100% Natural</span>
             </div>
             <h2
               className="text-[36px] font-bold leading-tight tracking-tight mb-3"
               style={{ fontFamily: 'Epilogue, sans-serif' }}
             >
-              The Modern Agrarian
+              Annamalai Dates
             </h2>
             <p className="text-[15px] text-[#fcf9f8]/85 leading-relaxed max-w-sm">
-              Join thousands who trust us for exceptional artisan dry fruits and dates, sourced with care and delivered fresh.
+              Join thousands who trust us for fresh, quality dates and dry fruits delivered right to their door.
             </p>
           </div>
         </section>

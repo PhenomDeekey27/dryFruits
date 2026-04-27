@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef } from 'react'
+import Link from 'next/link'
 import ProductCard from './ProductCard'
 import type { PublicProduct } from '@/lib/products'
 
@@ -96,8 +97,8 @@ export default function ProductCarousel({ products }: { products: PublicProduct[
 
         {/* View all CTA */}
         <div className="text-center mt-12">
-          <a
-            href="#"
+          <Link
+            href="/products"
             className="inline-flex items-center gap-2 text-[14px] font-semibold text-[#74554b] hover:text-[#1b1c1c] transition-colors group"
           >
             View entire collection
@@ -107,7 +108,7 @@ export default function ProductCarousel({ products }: { products: PublicProduct[
             >
               <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
             </svg>
-          </a>
+          </Link>
         </div>
       </div>
     </section>

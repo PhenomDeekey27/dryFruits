@@ -7,7 +7,9 @@
       "Bash(ls \"E:/Custom Projects/dryfruitswebsite/supabase/\"*)",
       "Bash(cat \"E:/Custom Projects/dryfruitswebsite/app/actions/\"*.ts)",
       "Bash(curl:*)",
-      "Bash(xargs grep *)"
+      "Bash(xargs grep *)",
+      "Bash(grep -E \"\\\\.tsx$\")",
+      "Bash(node -e \"const p = require\\('./package.json'\\); console.log\\(JSON.stringify\\(Object.keys\\({...p.dependencies, ...p.devDependencies}\\), null, 0\\)\\)\")"
     ]
   }
 }

@@ -19,16 +19,27 @@ const ITEMS_PER_PAGE = 9
 export default function ProductsClient() {
   const searchParams = useSearchParams()
   const searchQuery = searchParams.get('q') || ''
+  const categoryParam = searchParams.get('category') || ''
 
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([])
+  const [selectedCategories, setSelectedCategories] = useState<string[]>(() =>
+    categoryParam ? [categoryParam] : []
+  )
   const [maxPrice, setMaxPrice] = useState(10000)
   const [computedMax, setComputedMax] = useState(10000)
   const [sortBy, setSortBy] = useState('newest')
   const [sortOpen, setSortOpen] = useState(false)
   const [page, setPage] = useState(1)
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
+
+  // Sync URL category param → filter state
+  useEffect(() => {
+    if (categoryParam) {
+      setSelectedCategories([categoryParam])
+      setPage(1)
+    }
+  }, [categoryParam])
 
   useEffect(() => {
     getProducts()
@@ -182,10 +193,10 @@ export default function ProductsClient() {
             Curated Collection
           </span>
           <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-[#1b1c1c]" style={{ fontFamily: 'Epilogue, sans-serif' }}>
-            The Pantry Archive
+            All Products
           </h1>
           <p className="mt-3 max-w-xl mx-auto text-sm md:text-base font-medium" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif', color: '#3d2314' }}>
-            Sourced from sun-drenched orchards and ancient groves. Discover the world's finest dry fruits, hand-selected for the modern kitchen.
+            Browse our full range of premium dates, nuts, seeds, and dry fruits — handpicked for quality and freshness.
           </p>
         </div>
         <div className="absolute inset-0 opacity-[0.04] bg-gradient-to-br from-[#74554b] to-[#8f6d63] pointer-events-none" />

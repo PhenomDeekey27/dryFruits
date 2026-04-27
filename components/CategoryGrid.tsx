@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import Link from 'next/link'
 
 const categories = [
   {
@@ -35,7 +36,7 @@ export default function CategoryGrid() {
   const [featured, ...rest] = categories
 
   return (
-    <section className="py-24 bg-[#f6f3f2]">
+    <section id="categories" className="py-24 bg-[#f6f3f2]">
       <div className="max-w-7xl mx-auto px-6 md:px-8">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-14 gap-4">
@@ -49,10 +50,10 @@ export default function CategoryGrid() {
               className="text-[36px] md:text-[42px] font-bold tracking-tight text-[#1b1c1c]"
               style={{ fontFamily: 'Epilogue, sans-serif' }}
             >
-              The Agrarian Pantry
+              Shop by Category
             </h2>
           </div>
-          <a
+          <Link
             href="/products"
             className="text-[13px] font-semibold text-[#74554b] flex items-center gap-1.5 hover:gap-3 transition-all duration-200 whitespace-nowrap"
           >
@@ -60,13 +61,13 @@ export default function CategoryGrid() {
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
             </svg>
-          </a>
+          </Link>
         </div>
 
         {/* Bento grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4" style={{ minHeight: undefined }}>
           {/* Featured large card */}
-          <a
+          <Link
             href={`/products?category=${featured.slug}`}
             className="sm:col-span-2 md:col-span-2 relative group overflow-hidden rounded-2xl bg-[#e5e2e1] block min-h-[280px] md:min-h-[360px]"
           >
@@ -92,11 +93,11 @@ export default function CategoryGrid() {
                 </svg>
               </span>
             </div>
-          </a>
+          </Link>
 
           {/* Smaller cards */}
           {rest.map((cat, i) => (
-            <a
+            <Link
               key={cat.slug}
               href={`/products?category=${cat.slug}`}
               className={`relative group overflow-hidden rounded-2xl bg-[#e5e2e1] block min-h-[160px] sm:min-h-[180px] ${
@@ -125,7 +126,7 @@ export default function CategoryGrid() {
                   <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
                 </svg>
               </div>
-            </a>
+            </Link>
           ))}
         </div>
       </div>

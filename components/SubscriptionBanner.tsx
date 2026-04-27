@@ -23,12 +23,12 @@ export default function SubscriptionBanner() {
                 className="text-white text-[28px] sm:text-[36px] md:text-[48px] font-bold mb-4 sm:mb-5 leading-tight tracking-tight"
                 style={{ fontFamily: 'Epilogue, sans-serif' }}
               >
-                Subscription:<br />
-                Freshness in Flow
+                Subscribe &amp;<br />
+                Save Every Month
               </h2>
               <p className="text-white/80 text-[17px] mb-10 max-w-md leading-relaxed">
-                Save 15% on monthly agrarian curation. Freshly harvested, ethically sourced,
-                and delivered in sustainable packaging every season.
+                Get 15% off on your monthly order of fresh dates and dry fruits.
+                Handpicked, freshness-guaranteed, and delivered right to your door.
               </p>
               <button className="bg-white text-[#74554b] px-10 py-4 rounded-xl font-bold text-[14px] hover:bg-opacity-95 hover:shadow-xl transition-all duration-200 active:scale-95">
                 Start Your Journey
@@ -46,8 +46,8 @@ export default function SubscriptionBanner() {
                     </svg>
                   </div>
                   <div>
-                    <p className="text-white font-bold text-[15px]">The Harvest Club</p>
-                    <p className="text-white/60 text-[12px] mt-0.5">Join 10k+ agrarian members</p>
+                    <p className="text-white font-bold text-[15px]">Monthly Freshness Club</p>
+                    <p className="text-white/60 text-[12px] mt-0.5">Join 10k+ happy customers</p>
                   </div>
                 </div>
 
@@ -67,7 +67,7 @@ export default function SubscriptionBanner() {
 
                 {/* Testimonial snippet */}
                 <p className="text-white/80 text-[13px] italic leading-relaxed mb-4">
-                  &quot;The quality of these dates is architectural. Truly life-changing for my cooking.&quot;
+                  &quot;Best subscription I&apos;ve started. Fresh dates and nuts delivered every month — truly worth it.&quot;
                 </p>
 
                 {/* Perks */}

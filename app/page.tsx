@@ -2,7 +2,6 @@ import Navbar from '@/components/Navbar'
 import HeroSection from '@/components/HeroSection'
 import CategoryGrid from '@/components/CategoryGrid'
 import ProductCarousel from '@/components/ProductCarousel'
-import SubscriptionBanner from '@/components/SubscriptionBanner'
 import Testimonials from '@/components/Testimonials'
 import Footer from '@/components/Footer'
 import { getFeaturedProducts } from '@/lib/products'
@@ -10,7 +9,7 @@ import { getFeaturedProducts } from '@/lib/products'
 export const metadata = {
   title: 'Annamalai Dates — Premium Dry Fruits & Dates',
   description:
-    'Experience the architectural beauty of sun-cured Medjool dates and hand-polished artisan dry fruits. Sourced from the world\'s finest agrarian regions.',
+    'Shop premium quality dates, nuts, seeds, and dry fruits online. Handpicked for freshness and delivered across India.',
 }
 
 export default async function HomePage() {
@@ -23,7 +22,6 @@ export default async function HomePage() {
         <HeroSection />
         <CategoryGrid />
         <ProductCarousel products={products} />
-        <SubscriptionBanner />
         <Testimonials />
       </main>
       <Footer />

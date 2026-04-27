@@ -15,23 +15,23 @@ export default function HeroSection() {
             className="text-[#775a19] font-semibold uppercase tracking-[0.22em] text-[11px] mb-5 block"
             style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}
           >
-            Sourced from the heart of the Levant
+            Handpicked. Fresh. Delivered to your door.
           </span>
 
           <h1
             className="text-[38px] sm:text-[52px] md:text-[66px] lg:text-[76px] font-extrabold leading-[1.05] text-[#1b1c1c] mb-5 sm:mb-7 tracking-[-0.03em]"
             style={{ fontFamily: 'Epilogue, sans-serif' }}
           >
-            Nature&apos;s<br />
-            Confectionery,<br />
+            Premium Dates<br />
+            &amp; Dry Fruits,<br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#74554b] to-[#8f6d63]">
-              Refined.
+              Delivered Fresh.
             </span>
           </h1>
 
           <p className="text-[17px] text-[#504441] max-w-[480px] mb-10 leading-relaxed">
-            Experience the architectural beauty of sun-cured Medjool dates and hand-polished
-            Marcona almonds. An editorial journey into the world&apos;s finest agrarian treasures.
+            Experience the finest selection of handpicked dates, nuts, and seeds
+            sourced for quality and freshness — straight from farm to your home.
           </p>
 
           <div className="flex flex-wrap gap-4">
@@ -39,17 +39,17 @@ export default function HeroSection() {
               href="/products"
               className="inline-flex items-center gap-2 bg-gradient-to-br from-[#74554b] to-[#8f6d63] text-white px-8 py-4 rounded-lg font-semibold text-[14px] shadow-sm hover:shadow-lg hover:from-[#5d4037] hover:to-[#74554b] transition-all duration-300 active:scale-95"
             >
-              Shop the Collection
+              Shop Now
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
               </svg>
             </Link>
-            <a
-              href="#"
+            <Link
+              href="#categories"
               className="inline-flex items-center gap-2 bg-[#e5e2e1] text-[#1b1c1c] px-8 py-4 rounded-lg font-semibold text-[14px] hover:bg-[#eae7e7] transition-all duration-200"
             >
-              Our Heritage
-            </a>
+              Explore Categories
+            </Link>
           </div>
 
           {/* Trust badges */}
@@ -83,8 +83,8 @@ export default function HeroSection() {
             />
             {/* Floating badge */}
             <div className="absolute top-6 left-6 bg-white/90 backdrop-blur-sm rounded-xl px-4 py-3 shadow-md">
-              <p className="text-[11px] font-bold text-[#775a19] uppercase tracking-widest">Freshly Harvested</p>
-              <p className="text-[13px] font-semibold text-[#1b1c1c] mt-0.5">New Season Medjool</p>
+              <p className="text-[11px] font-bold text-[#775a19] uppercase tracking-widest">100% Natural</p>
+              <p className="text-[13px] font-semibold text-[#1b1c1c] mt-0.5">No Additives Added</p>
             </div>
           </div>
         </div>

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { useRouter, usePathname } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
 import { getMyProfile } from '@/app/actions/profile'
@@ -129,8 +130,8 @@ export default function Navbar() {
 
   const navLinks = [
     { label: 'Shop', href: '/products' },
-    { label: 'Categories', href: '/products' },
-    { label: 'About', href: '#' },
+    { label: 'Categories', href: '/#categories' },
+    { label: 'About', href: '/about' },
   ]
 
   return (
@@ -144,12 +145,14 @@ export default function Navbar() {
       <div className="flex justify-between items-center px-6 md:px-8 h-20 max-w-7xl mx-auto">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2.5 group flex-shrink-0">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#74554b] to-[#8f6d63] flex items-center justify-center shadow-sm">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
-              <path d="M12 6v6l4 2"/>
-            </svg>
-          </div>
+          <Image
+            src="/logo.jpg"
+            alt="Annamalai Dates"
+            width={40}
+            height={40}
+            className="h-10 w-auto rounded-lg object-contain"
+            priority
+          />
           <span className="text-[17px] font-bold text-[#1b1c1c] tracking-tight group-hover:text-[#74554b] transition-colors" style={{ fontFamily: 'Epilogue, sans-serif' }}>
             Annamalai Dates
           </span>

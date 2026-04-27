@@ -1,16 +1,17 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { ToastProvider } from "@/components/Toast";
 
 export const metadata: Metadata = {
-  title: "Annamalai Dates — Premium D2C Control",
-  description: "Admin dashboard for Annamalai Dates dry fruits store",
+  title: "Annamalai Dates — Premium Dry Fruits & Dates",
+  description: "Shop premium quality dates, nuts, seeds, and dry fruits online. Handpicked for freshness and delivered across India.",
 };
 
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className="h-full">
+    <html lang="en" className="h-full" style={{ scrollBehavior: 'smooth' }}>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -20,7 +21,9 @@ export default function RootLayout({
         />
       </head>
       <body className="h-full antialiased" style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>
-        {children}
+        <ToastProvider>
+          {children}
+        </ToastProvider>
       </body>
     </html>
   );
