@@ -1,7 +1,7 @@
 "use server";
 
 import { createServerSupabaseClient } from "@/lib/supabase-server";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 
 interface Product {
   id: string;
@@ -41,7 +41,7 @@ export async function createCollection(name: string) {
     .single();
 
   if (error) throw error;
-  revalidateTag("collections", "max");
+  updateTag("collections");
   return data;
 }
 
@@ -53,7 +53,7 @@ export async function addToCollection(collectionId: string, productId: string) {
   });
 
   if (error && error.code !== "23505") throw error; // Ignore duplicate
-  revalidateTag("collections", "max");
+  updateTag("collections");
 }
 
 export async function removeFromCollection(
@@ -68,7 +68,7 @@ export async function removeFromCollection(
     .eq("product_id", productId);
 
   if (error) throw error;
-  revalidateTag("collections", "max");
+  updateTag("collections");
 }
 
 export async function deleteCollection(collectionId: string) {
@@ -79,7 +79,7 @@ export async function deleteCollection(collectionId: string) {
     .eq("id", collectionId);
 
   if (error) throw error;
-  revalidateTag("collections", "max");
+  updateTag("collections");
 }
 
 export async function getCollections() {

@@ -1,7 +1,7 @@
 "use server";
 
 import { createServerSupabaseClient } from "@/lib/supabase-server";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 
 export async function addToCart(
   productId: string,
@@ -30,7 +30,7 @@ export async function addToCart(
   );
 
   if (error) throw new Error(`[${error.code}] ${error.message}${error.hint ? ` — ${error.hint}` : ''}`);
-  revalidateTag("cart", "max");
+  updateTag("cart");
 }
 
 export async function removeFromCart(cartItemId: string) {
@@ -41,7 +41,7 @@ export async function removeFromCart(cartItemId: string) {
     .eq("id", cartItemId);
 
   if (error) throw error;
-  revalidateTag("cart", "max");
+  updateTag("cart");
 }
 
 export async function updateCartQuantity(cartItemId: string, quantity: number) {
@@ -56,7 +56,7 @@ export async function updateCartQuantity(cartItemId: string, quantity: number) {
     .eq("id", cartItemId);
 
   if (error) throw error;
-  revalidateTag("cart", "max");
+  updateTag("cart");
 }
 
 export async function getCart() {
@@ -105,5 +105,5 @@ export async function clearCart() {
     .eq("user_id", user.id);
 
   if (error) throw error;
-  revalidateTag("cart", "max");
+  updateTag("cart");
 }

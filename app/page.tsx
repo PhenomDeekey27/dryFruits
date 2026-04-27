@@ -1,28 +1,49 @@
 import Navbar from '@/components/Navbar'
-import HeroSection from '@/components/HeroSection'
-import CategoryGrid from '@/components/CategoryGrid'
-import ProductCarousel from '@/components/ProductCarousel'
-import Testimonials from '@/components/Testimonials'
 import Footer from '@/components/Footer'
-import { getFeaturedProducts } from '@/lib/products'
+import EditorialHero from '@/components/editorial/EditorialHero'
+import PrologueSection from '@/components/editorial/PrologueSection'
+import EditorialProductGrid from '@/components/editorial/EditorialProductGrid'
+import MetricsSection from '@/components/editorial/MetricsSection'
+import QuoteSection from '@/components/editorial/QuoteSection'
+import FeaturesSection from '@/components/editorial/FeaturesSection'
+import FinalCTASection from '@/components/editorial/FinalCTASection'
+import FloatingDryFruit from '@/components/editorial/FloatingDryFruit'
 
 export const metadata = {
-  title: 'Annamalai Dates — Premium Dry Fruits & Dates',
+  title: 'Annamalai Dates — A Curated Edition of Dry Fruits',
   description:
-    'Shop premium quality dates, nuts, seeds, and dry fruits online. Handpicked for freshness and delivered across India.',
+    'A small editorial house for premium dry fruits — almonds, cashews, pistachios, walnuts and dates, sourced one grove at a time.',
 }
 
-export default async function HomePage() {
-  const products = await getFeaturedProducts()
-
+export default function HomePage() {
   return (
-    <div className="min-h-screen" style={{ background: '#fcf9f8', color: '#1b1c1c' }}>
+    <div
+      className="relative min-h-screen"
+      style={{ background: 'var(--color-surface, #fcf9f8)', color: 'var(--color-on-surface, #1b1c1c)' }}
+    >
+      <FloatingDryFruit />
       <Navbar />
-      <main className="pt-20">
-        <HeroSection />
-        <CategoryGrid />
-        <ProductCarousel products={products} />
-        <Testimonials />
+      <main className="relative z-10">
+        {/* 01 — Hero (cinematic frame canvas) */}
+        <EditorialHero />
+
+        {/* 02 — Prologue / Origin */}
+        <PrologueSection />
+
+        {/* 03 — Product grid */}
+        <EditorialProductGrid />
+
+        {/* 04 — Standard / metrics */}
+        <MetricsSection />
+
+        {/* 05 — Grower quote */}
+        <QuoteSection />
+
+        {/* 06 — Features / promise */}
+        <FeaturesSection />
+
+        {/* 07 — Final invitation */}
+        <FinalCTASection />
       </main>
       <Footer />
     </div>

@@ -2,6 +2,7 @@
 
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { getProfileRole } from '@/lib/supabase-admin'
+import { getSiteUrl } from '@/lib/get-site-url'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 
@@ -39,7 +40,7 @@ export async function login(prevState: { error: string }, formData: FormData) {
 
 export async function signInWithGoogle(): Promise<void> {
   const supabase = await createServerSupabaseClient()
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'
+  const siteUrl = getSiteUrl()
 
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
@@ -55,7 +56,7 @@ export async function signInWithGoogle(): Promise<void> {
 
 export async function signInWithGithub(): Promise<void> {
   const supabase = await createServerSupabaseClient()
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'
+  const siteUrl = getSiteUrl()
 
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'github',
@@ -94,7 +95,7 @@ export async function signup(prevState: { error: string; success: string }, form
     return { error: 'Password must be at least 6 characters', success: '' }
   }
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'
+  const siteUrl = getSiteUrl()
 
   const { error } = await supabase.auth.signUp({
     email,

@@ -1,7 +1,7 @@
 "use server";
 
 import { createServerSupabaseClient } from "@/lib/supabase-server";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 
 export async function addToWishlist(productId: string) {
   const supabase = await createServerSupabaseClient();
@@ -19,7 +19,7 @@ export async function addToWishlist(productId: string) {
   });
 
   if (error && error.code !== "23505") throw error; // Ignore duplicate error
-  revalidateTag("wishlist", "max");
+  updateTag("wishlist");
 }
 
 export async function removeFromWishlist(productId: string) {
@@ -37,7 +37,7 @@ export async function removeFromWishlist(productId: string) {
     .eq("product_id", productId);
 
   if (error) throw error;
-  revalidateTag("wishlist", "max");
+  updateTag("wishlist");
 }
 
 export async function getWishlist() {
