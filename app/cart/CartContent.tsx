@@ -53,7 +53,7 @@ export default function CartContent({ cartItems, suggestedProducts }: Props) {
           </svg>
           <h2 className="text-2xl font-bold text-[#1b1c1c] mb-2">Your cart is empty</h2>
           <p className="text-[#504441] mb-8">Explore our collection and add some items to your cart.</p>
-          <Link href="/" className="inline-block px-8 py-4 bg-gradient-to-br from-[#74554b] to-[#8f6d63] text-white rounded-xl font-semibold hover:shadow-lg transition-all">
+          <Link href="/products" className="inline-block px-8 py-4 bg-gradient-to-br from-[#74554b] to-[#8f6d63] text-white rounded-xl font-semibold hover:shadow-lg transition-all">
             Continue Shopping
           </Link>
         </div>

@@ -26,6 +26,7 @@ export default function ProductsClient() {
   const [selectedCategories, setSelectedCategories] = useState<string[]>(() =>
     categoryParam ? [categoryParam] : []
   )
+  const [minPrice, setMinPrice] = useState(0)
   const [maxPrice, setMaxPrice] = useState(10000)
   const [computedMax, setComputedMax] = useState(10000)
   const [sortBy, setSortBy] = useState('newest')
@@ -49,6 +50,7 @@ export default function ProductsClient() {
         if (prices.length > 0) {
           const max = Math.ceil(Math.max(...prices) / 100) * 100
           setComputedMax(max)
+          setMinPrice(0)
           setMaxPrice(max)
         }
       })
@@ -75,11 +77,12 @@ export default function ProductsClient() {
       list = list.filter(p => selectedCategories.includes(p.category))
     }
 
-    if (maxPrice < computedMax) {
+    if (minPrice > 0 || maxPrice < computedMax) {
       list = list.filter(p => {
         const prices = (p.product_variants ?? []).map(v => v.price)
-        const min = prices.length > 0 ? Math.min(...prices) : 0
-        return min <= maxPrice
+        const lo = prices.length > 0 ? Math.min(...prices) : 0
+        const hi = prices.length > 0 ? Math.max(...prices) : 0
+        return hi >= minPrice && lo <= maxPrice
       })
     }
 
@@ -116,13 +119,14 @@ export default function ProductsClient() {
 
   function clearFilters() {
     setSelectedCategories([])
+    setMinPrice(0)
     setMaxPrice(computedMax)
     setSortBy('newest')
     setPage(1)
   }
 
   const currentSort = SORT_OPTIONS.find(o => o.value === sortBy)?.label ?? 'Sort'
-  const hasActiveFilters = selectedCategories.length > 0 || maxPrice < computedMax
+  const hasActiveFilters = selectedCategories.length > 0 || minPrice > 0 || maxPrice < computedMax
 
   const Sidebar = () => (
     <div className="space-y-10">
@@ -157,19 +161,51 @@ export default function ProductsClient() {
         <h3 className="font-bold text-lg mb-5 tracking-tight text-[#1b1c1c]" style={{ fontFamily: 'Epilogue, sans-serif' }}>
           Price Range
         </h3>
-        <div className="px-1">
-          <input
-            type="range"
-            min={0}
-            max={computedMax}
-            step={Math.max(10, Math.ceil(computedMax / 100) * 5)}
-            value={maxPrice}
-            onChange={e => { setMaxPrice(Number(e.target.value)); setPage(1) }}
-            className="w-full h-1 bg-[#eae7e7] rounded-full appearance-none accent-[#775a19]"
-          />
-          <div className="flex justify-between mt-3 text-xs text-[#504441]">
-            <span>₹0</span>
-            <span className="font-semibold text-[#1b1c1c]">up to ₹{maxPrice.toLocaleString('en-IN')}</span>
+        <div className="space-y-3">
+          <div className="grid grid-cols-2 gap-2">
+            <div>
+              <label className="text-[10px] font-semibold text-[#827470] uppercase tracking-wider block mb-1.5">Min</label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#827470] text-xs font-semibold">₹</span>
+                <input
+                  type="number"
+                  min={0}
+                  max={maxPrice}
+                  value={minPrice}
+                  onChange={e => { setMinPrice(Math.min(Number(e.target.value), maxPrice)); setPage(1) }}
+                  className="w-full h-10 pl-6 pr-2 text-sm font-semibold text-[#1b1c1c] bg-[#f6f3f2] border border-[#d4c3be]/40 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#775a19]/30 focus:border-[#775a19]/50"
+                />
+              </div>
+            </div>
+            <div>
+              <label className="text-[10px] font-semibold text-[#827470] uppercase tracking-wider block mb-1.5">Max</label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#827470] text-xs font-semibold">₹</span>
+                <input
+                  type="number"
+                  min={minPrice}
+                  max={computedMax}
+                  value={maxPrice}
+                  onChange={e => { setMaxPrice(Math.max(Number(e.target.value), minPrice)); setPage(1) }}
+                  className="w-full h-10 pl-6 pr-2 text-sm font-semibold text-[#1b1c1c] bg-[#f6f3f2] border border-[#d4c3be]/40 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#775a19]/30 focus:border-[#775a19]/50"
+                />
+              </div>
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-1.5 pt-1">
+            {[500, 1000, 2000, 5000].filter(v => v <= computedMax).map(preset => (
+              <button
+                key={preset}
+                onClick={() => { setMinPrice(0); setMaxPrice(preset); setPage(1) }}
+                className={`text-[11px] font-semibold px-2.5 py-1 rounded-full border transition-colors ${
+                  maxPrice === preset && minPrice === 0
+                    ? 'bg-[#775a19] text-white border-[#775a19]'
+                    : 'bg-[#f0eded] text-[#504441] border-[#d4c3be]/40 hover:border-[#775a19]/40'
+                }`}
+              >
+                Under ₹{preset.toLocaleString('en-IN')}
+              </button>
+            ))}
           </div>
         </div>
       </section>

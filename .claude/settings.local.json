@@ -10,7 +10,10 @@
       "Bash(xargs grep *)",
       "Bash(grep -E \"\\\\.tsx$\")",
       "Bash(node -e \"const p = require\\('./package.json'\\); console.log\\(JSON.stringify\\(Object.keys\\({...p.dependencies, ...p.devDependencies}\\), null, 0\\)\\)\")",
-      "Bash(timeout 180 npx next build)"
+      "Bash(timeout 180 npx next build)",
+      "Bash(python3 -c ' *)",
+      "Bash(python -c ' *)",
+      "Bash(powershell -command ' *)"
     ]
   }
 }

@@ -149,6 +149,40 @@ export async function getAdminUser() {
   return ensureProfile(supabase, user)
 }
 
+export async function sendPasswordResetEmail(prevState: { error: string; success: string }, formData: FormData) {
+  const supabase = await createServerSupabaseClient()
+  const email = formData.get('email') as string
+
+  if (!email) return { error: 'Email is required', success: '' }
+
+  const siteUrl = getSiteUrl()
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${siteUrl}/reset-password`,
+  })
+
+  if (error) return { error: error.message, success: '' }
+
+  return {
+    error: '',
+    success: `Password reset instructions sent to ${email}. Check your inbox.`,
+  }
+}
+
+export async function updatePassword(prevState: { error: string; success: string }, formData: FormData) {
+  const supabase = await createServerSupabaseClient()
+  const password = formData.get('password') as string
+  const confirm = formData.get('confirm') as string
+
+  if (!password) return { error: 'Password is required', success: '' }
+  if (password.length < 6) return { error: 'Password must be at least 6 characters', success: '' }
+  if (password !== confirm) return { error: 'Passwords do not match', success: '' }
+
+  const { error } = await supabase.auth.updateUser({ password })
+  if (error) return { error: error.message, success: '' }
+
+  redirect('/login')
+}
+
 export async function getCurrentUser() {
   const supabase = await createServerSupabaseClient()
   const { data: { user } } = await supabase.auth.getUser()

@@ -1,6 +1,7 @@
 'use client'
 
 import { useActionState, useState } from 'react'
+import Link from 'next/link'
 import { login, signInWithGoogle, signInWithGithub } from '@/app/actions/auth'
 import { useSearchParams } from 'next/navigation'
 import { Suspense } from 'react'
@@ -104,9 +105,9 @@ function LoginFormInner() {
             <label className="text-[11px] font-semibold text-[#504441] uppercase tracking-wider">
               Password
             </label>
-            <a href="#" className="text-[12px] text-[#775a19] font-semibold hover:underline">
-              Forgot?
-            </a>
+            <Link href="/forgot-password" className="text-[12px] text-[#775a19] font-semibold hover:underline">
+              Forgot password?
+            </Link>
           </div>
           <div className="relative">
             <input

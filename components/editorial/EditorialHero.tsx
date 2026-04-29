@@ -28,13 +28,14 @@ export default function EditorialHero() {
     const imgs: HTMLImageElement[] = []
     let cancelled = false
 
-    const loadBatch = (start: number, end: number) =>
+    const loadBatch = (start: number, end: number, priority: boolean = false) =>
       Promise.all(
         Array.from({ length: end - start }, (_, k) => {
           const i = start + k + 1
           return new Promise<void>((resolve) => {
             const img = new Image()
-            img.decoding = 'async'
+            img.decoding = priority ? 'sync' : 'async'
+            img.fetchPriority = priority ? 'high' : 'low'
             img.src = FRAME_PATH(i)
             img.onload = () => {
               imgs[i - 1] = img
@@ -47,13 +48,13 @@ export default function EditorialHero() {
       )
 
     ;(async () => {
-      // Critical first batch — render hero immediately
-      await loadBatch(0, 24)
+      // Critical first batch — render hero immediately at highest priority
+      await loadBatch(0, 30, true)
       framesRef.current = imgs
       drawFrame(0)
       // Background batches
-      await loadBatch(24, 80)
-      await loadBatch(80, 160)
+      await loadBatch(30, 90)
+      await loadBatch(90, 160)
       await loadBatch(160, FRAME_COUNT)
     })()
 
@@ -69,12 +70,16 @@ export default function EditorialHero() {
     if (!canvas) return
 
     const resize = () => {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2)
+      const dpr = window.devicePixelRatio || 1
       const rect = canvas.getBoundingClientRect()
       canvas.width = Math.round(rect.width * dpr)
       canvas.height = Math.round(rect.height * dpr)
       const ctx = canvas.getContext('2d')
-      if (ctx) ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+      if (ctx) {
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+        ctx.imageSmoothingEnabled = true
+        ctx.imageSmoothingQuality = 'high'
+      }
       drawFrame(currentFrameRef.current)
     }
 
@@ -93,6 +98,8 @@ export default function EditorialHero() {
 
     const cw = canvas.clientWidth
     const ch = canvas.clientHeight
+    ctx.imageSmoothingEnabled = true
+    ctx.imageSmoothingQuality = 'high'
     ctx.clearRect(0, 0, cw, ch)
 
     // cover-fit
@@ -165,7 +172,10 @@ export default function EditorialHero() {
         <canvas
           ref={canvasRef}
           className="absolute inset-0 w-full h-full"
-          style={{ display: 'block' }}
+          style={{
+            display: 'block',
+            filter: 'contrast(1.08) saturate(1.1) brightness(1.02)',
+          }}
         />
 
         {/* Vignette overlay for cinematic blend */}
