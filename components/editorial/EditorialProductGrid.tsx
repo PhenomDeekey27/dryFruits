@@ -4,7 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 
-type EditorialProduct = {
+export type EditorialProduct = {
   id: string
   index: string
   name: string
@@ -13,6 +13,8 @@ type EditorialProduct = {
   notes: string
   imageUrl: string
   price: string
+  category?: string
+  productId?: string
 }
 
 const FALLBACK_PRODUCTS: EditorialProduct[] = [
@@ -35,7 +37,7 @@ const FALLBACK_PRODUCTS: EditorialProduct[] = [
     origin: 'Goa Coast · Rain Sun',
     notes: 'Creamy · W240 Grade · Quiet sweet',
     imageUrl:
-      'https://images.unsplash.com/photo-1606923829589-3a1f17fc7c0d?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1559827260-dc66d52bef19?auto=format&fit=crop&w=900&q=80',
     price: '₹1,460',
   },
   {
@@ -57,7 +59,7 @@ const FALLBACK_PRODUCTS: EditorialProduct[] = [
     origin: 'Cross-Sourced · Vol. 01',
     notes: 'Walnut · Almond · Pistachio · Raisin',
     imageUrl:
-      'https://images.unsplash.com/photo-1517593322927-2cae5fc04f29?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1585329543716-b9bc99f1a55c?auto=format&fit=crop&w=900&q=80',
     price: '₹1,920',
   },
 ]
@@ -127,10 +129,19 @@ export default function EditorialProductGrid({
           ref={ref}
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 sm:gap-x-8 gap-y-14 sm:gap-y-20"
         >
-          {list.map((p, i) => (
+          {list.map((p, i) => {
+            let linkHref = `/products`
+            if (p.productId) {
+              linkHref = `/products/${p.productId}`
+            } else if (p.category) {
+              linkHref = `/products?category=${encodeURIComponent(p.category)}`
+            } else {
+              linkHref = `/products?q=${encodeURIComponent(p.name)}`
+            }
+            return (
             <Link
               key={p.id}
-              href={`/products`}
+              href={linkHref}
               className="group block"
               style={{
                 opacity: visible ? 1 : 0,
@@ -206,7 +217,8 @@ export default function EditorialProductGrid({
                 {p.origin}
               </p>
             </Link>
-          ))}
+            )
+          })}
         </div>
       </div>
     </section>

@@ -83,6 +83,11 @@ export default function ProductDetailClient({ product, relatedProducts }: Props)
     setCartMsg(null)
     try {
       const result = await addToCart(product.id, selectedVariant.id, 1)
+      if (result.notLoggedIn) {
+        setCartMsg('Please sign in to add items to your cart. Redirecting…')
+        setTimeout(() => router.push('/login'), 1800)
+        return
+      }
       if (result.alreadyInCart) {
         setIsInCart(true)
       } else {
@@ -96,7 +101,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Props)
       const e = err as { message?: string; code?: string }
       const msg = e?.message ?? String(err)
       const code = e?.code ? ` [${e.code}]` : ''
-      setCartMsg(msg.includes('logged in') ? 'Please sign in to add items to cart' : `Failed to add to cart${code}: ${msg}`)
+      setCartMsg(`Failed to add to cart${code}: ${msg}`)
       setTimeout(() => setCartMsg(null), 8000)
     } finally {
       setIsAddingToCart(false)
@@ -236,7 +241,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Props)
 
           {/* Cart feedback */}
           {cartMsg && (
-            <div className={`mb-4 px-4 py-3 rounded-lg text-sm font-medium ${cartMsg.includes('sign in') ? 'bg-[#ffdad6] text-[#ba1a1a]' : 'bg-[#dcfce7] text-[#166534]'}`}>
+            <div className={`mb-4 px-4 py-3 rounded-lg text-sm font-medium ${cartMsg.includes('sign in') || cartMsg.includes('Redirecting') ? 'bg-[#ffdad6] text-[#ba1a1a]' : 'bg-[#dcfce7] text-[#166534]'}`}>
               {cartMsg}
             </div>
           )}
@@ -339,7 +344,9 @@ export default function ProductDetailClient({ product, relatedProducts }: Props)
                       <Image src={rpImage} alt={rp.name} width={300} height={400} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                     )}
                   </div>
-                  <h3 className="font-bold text-base sm:text-lg mb-1 text-[#1b1c1c]" style={{ fontFamily: 'Epilogue, sans-serif' }}>{rp.name}</h3>
+                  {rp.name && (
+                    <h3 className="font-bold text-base sm:text-lg mb-1 text-[#1b1c1c]" style={{ fontFamily: 'Epilogue, sans-serif' }}>{rp.name}</h3>
+                  )}
                   <p className="text-sm text-[#827470] font-body uppercase tracking-wider mb-2">{rp.category}</p>
                   <p className="font-bold text-[#74554b]" style={{ fontFamily: 'Epilogue, sans-serif' }}>₹{rpPrice.toLocaleString('en-IN')}</p>
                 </Link>

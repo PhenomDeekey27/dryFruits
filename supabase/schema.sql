@@ -201,6 +201,32 @@ CREATE POLICY "Users manage own collection items"
     )
   );
 
+-- 10. FEATURED CARDS (homepage "Four lots, one season" section)
+CREATE TABLE IF NOT EXISTS public.featured_cards (
+  id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  sort_order INTEGER NOT NULL DEFAULT 1,
+  name       TEXT NOT NULL,
+  category   TEXT,
+  subtitle   TEXT,
+  origin     TEXT,
+  notes      TEXT,
+  image_url  TEXT NOT NULL DEFAULT '',
+  price      TEXT,
+  is_active  BOOLEAN NOT NULL DEFAULT true,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+ALTER TABLE public.featured_cards ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Admins manage featured cards"
+  ON public.featured_cards FOR ALL
+  USING (
+    EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin')
+  );
+
+CREATE POLICY "Public can read featured cards"
+  ON public.featured_cards FOR SELECT USING (true);
+
 -- =============================================
 -- MAKE YOURSELF ADMIN
 -- After signing up, run this to grant admin role:

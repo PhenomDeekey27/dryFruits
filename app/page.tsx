@@ -8,6 +8,8 @@ import QuoteSection from '@/components/editorial/QuoteSection'
 import FeaturesSection from '@/components/editorial/FeaturesSection'
 import FinalCTASection from '@/components/editorial/FinalCTASection'
 import FloatingDryFruit from '@/components/editorial/FloatingDryFruit'
+import { getActiveFeaturedCards } from '@/app/actions/featured-cards'
+import type { EditorialProduct } from '@/components/editorial/EditorialProductGrid'
 
 export const metadata = {
   title: 'Annamalai Dates — A Curated Edition of Dry Fruits',
@@ -15,7 +17,26 @@ export const metadata = {
     'A small editorial house for premium dry fruits — almonds, cashews, pistachios, walnuts and dates, sourced one grove at a time.',
 }
 
-export default function HomePage() {
+export default async function HomePage() {
+  let editorialProducts: EditorialProduct[] | undefined
+  try {
+    const cards = await getActiveFeaturedCards()
+    if (cards.length > 0) {
+      editorialProducts = cards.map(card => ({
+        id: card.id,
+        index: String(card.sort_order).padStart(2, '0'),
+        name: card.name,
+        category: card.category,
+        productId: card.product_id,
+        series: card.subtitle || '',
+        origin: card.origin || '',
+        notes: card.notes || '',
+        imageUrl: card.image_url,
+        price: card.price || '',
+      }))
+    }
+  } catch {}
+
   return (
     <div
       className="relative min-h-screen"
@@ -31,7 +52,7 @@ export default function HomePage() {
         <PrologueSection />
 
         {/* 03 — Product grid */}
-        <EditorialProductGrid />
+        <EditorialProductGrid products={editorialProducts} />
 
         {/* 04 — Standard / metrics */}
         <MetricsSection />

@@ -13,7 +13,12 @@
       "Bash(timeout 180 npx next build)",
       "Bash(python3 -c ' *)",
       "Bash(python -c ' *)",
-      "Bash(powershell -command ' *)"
+      "Bash(powershell -command ' *)",
+      "Bash(Get-ChildItem -Path \"E:\\\\Custom Projects\\\\dryfruitswebsite\" -Force)",
+      "Bash(Select-Object Name, Mode)",
+      "Bash(Get-ChildItem -Path \"app\\\\\\(admin\\)\\\\admin\" -Recurse -Filter \"*.tsx\" -File)",
+      "Bash(Select-Object FullName)",
+      "Bash(Format-Table -HideTableHeaders)"
     ]
   }
 }

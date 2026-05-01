@@ -7,14 +7,14 @@ export async function addToCart(
   productId: string,
   variantId: string,
   quantity: number = 1,
-): Promise<{ alreadyInCart: boolean }> {
+): Promise<{ alreadyInCart?: boolean; notLoggedIn?: boolean }> {
   const supabase = await createServerSupabaseClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
   if (!user) {
-    throw new Error("Must be logged in");
+    return { notLoggedIn: true };
   }
 
   // Check if this exact variant is already in the cart
