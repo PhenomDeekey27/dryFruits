@@ -30,12 +30,14 @@ export default function CartItem({ id, product, variant, quantity }: CartItemPro
     if (newQty <= 0) return
     setQty(newQty)
     await updateCartQuantity(id, newQty)
+    window.dispatchEvent(new CustomEvent('cart:updated'))
     router.refresh()
   }
 
   const handleRemove = async () => {
     setIsRemoving(true)
     await removeFromCart(id)
+    window.dispatchEvent(new CustomEvent('cart:updated'))
     router.refresh()
   }
 
