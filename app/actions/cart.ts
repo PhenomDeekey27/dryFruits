@@ -7,7 +7,7 @@ export async function addToCart(
   productId: string,
   variantId: string,
   quantity: number = 1,
-) {
+): Promise<{ alreadyInCart: boolean }> {
   const supabase = await createServerSupabaseClient();
   const {
     data: { user },
@@ -17,20 +17,29 @@ export async function addToCart(
     throw new Error("Must be logged in");
   }
 
-  const { error } = await supabase.from("cart_items").upsert(
-    {
-      user_id: user.id,
-      product_id: productId,
-      variant_id: variantId,
-      quantity,
-    },
-    {
-      onConflict: "user_id,product_id,variant_id",
-    },
-  );
+  // Check if this exact variant is already in the cart
+  const { data: existing } = await supabase
+    .from("cart_items")
+    .select("id")
+    .eq("user_id", user.id)
+    .eq("product_id", productId)
+    .eq("variant_id", variantId)
+    .maybeSingle();
+
+  if (existing) {
+    return { alreadyInCart: true };
+  }
+
+  const { error } = await supabase.from("cart_items").insert({
+    user_id: user.id,
+    product_id: productId,
+    variant_id: variantId,
+    quantity,
+  });
 
   if (error) throw new Error(`[${error.code}] ${error.message}${error.hint ? ` — ${error.hint}` : ''}`);
   updateTag("cart");
+  return { alreadyInCart: false };
 }
 
 export async function removeFromCart(cartItemId: string) {

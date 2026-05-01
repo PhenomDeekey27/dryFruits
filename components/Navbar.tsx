@@ -60,7 +60,7 @@ export default function Navbar() {
     return () => subscription.unsubscribe()
   }, [])
 
-  // Fetch cart count — re-runs on every navigation so badge stays in sync
+  // Fetch cart count — re-runs on every navigation and on cart:updated events
   useEffect(() => {
     async function fetchCount() {
       const supabase = createClient()
@@ -74,6 +74,8 @@ export default function Navbar() {
       setCartCount(total)
     }
     fetchCount()
+    window.addEventListener('cart:updated', fetchCount)
+    return () => window.removeEventListener('cart:updated', fetchCount)
   }, [pathname])
 
   // Search debounce

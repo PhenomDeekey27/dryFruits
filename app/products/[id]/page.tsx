@@ -2,8 +2,8 @@ import { notFound } from 'next/navigation'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import ProductDetailClient from './ProductDetailClient'
-import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { createAdminSupabaseClient } from '@/lib/supabase-admin'
+import { createServerSupabaseClient } from '@/lib/supabase-server'
 
 export default async function ProductDetailPage({
   params,
@@ -16,24 +16,10 @@ export default async function ProductDetailPage({
   const adminClient = createAdminSupabaseClient()
   const db = adminClient ?? await createServerSupabaseClient()
 
-  const [productResult, collectionsResult] = await Promise.all([
-    db.from('products')
-      .select('*, product_variants(*), product_images(image_url)')
-      .eq('id', id)
-      .single(),
-    // Collections require the user's session — best-effort only
-    (async () => {
-      try {
-        const supabase = await createServerSupabaseClient()
-        const { data: { user } } = await supabase.auth.getUser()
-        if (!user) return []
-        const { data } = await supabase.from('collections').select('id, name').eq('user_id', user.id)
-        return data ?? []
-      } catch {
-        return []
-      }
-    })(),
-  ])
+  const productResult = await db.from('products')
+    .select('*, product_variants(*), product_images(image_url)')
+    .eq('id', id)
+    .single()
 
   if (productResult.error || !productResult.data) notFound()
 
@@ -53,7 +39,6 @@ export default async function ProductDetailPage({
       <ProductDetailClient
         product={product}
         relatedProducts={relatedProducts ?? []}
-        collections={collectionsResult}
       />
       <Footer />
     </div>

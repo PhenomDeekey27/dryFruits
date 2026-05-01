@@ -1,11 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import WishlistButton from '@/components/WishlistButton'
-import CollectionModal from '@/components/CollectionModal'
+import { useRouter } from 'next/navigation'
 import { addToCart } from '@/app/actions/cart'
+import { createClient } from '@/lib/supabase'
 
 interface ProductVariant {
   id: string
@@ -39,30 +39,59 @@ interface RelatedProduct {
 interface Props {
   product: Product
   relatedProducts: RelatedProduct[]
-  collections: { id: string; name: string }[]
+  collections?: { id: string; name: string }[]
 }
 
-export default function ProductDetailClient({ product, relatedProducts, collections }: Props) {
+export default function ProductDetailClient({ product, relatedProducts }: Props) {
+  const router = useRouter()
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant>(
     product.product_variants?.[0] ?? null as unknown as ProductVariant
   )
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
   const [isAddingToCart, setIsAddingToCart] = useState(false)
   const [cartMsg, setCartMsg] = useState<string | null>(null)
-  const [isCollectionModalOpen, setIsCollectionModalOpen] = useState(false)
+  const [isInCart, setIsInCart] = useState(false)
 
   const mainImage = product.product_images?.[selectedImageIndex]?.image_url
   const rating = 4.8
   const reviews = 47
+
+  // Check if the selected variant is already in the cart
+  useEffect(() => {
+    let cancelled = false
+    async function checkCart() {
+      if (!selectedVariant) { setIsInCart(false); return }
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) { setIsInCart(false); return }
+      const { data } = await supabase
+        .from('cart_items')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('variant_id', selectedVariant.id)
+        .maybeSingle()
+      if (!cancelled) setIsInCart(!!data)
+    }
+    checkCart()
+    window.addEventListener('cart:updated', checkCart)
+    return () => { cancelled = true; window.removeEventListener('cart:updated', checkCart) }
+  }, [selectedVariant])
 
   const handleAddToCart = async () => {
     if (!selectedVariant) return
     setIsAddingToCart(true)
     setCartMsg(null)
     try {
-      await addToCart(product.id, selectedVariant.id, 1)
-      setCartMsg('Added to cart!')
-      setTimeout(() => setCartMsg(null), 3000)
+      const result = await addToCart(product.id, selectedVariant.id, 1)
+      if (result.alreadyInCart) {
+        setIsInCart(true)
+      } else {
+        setCartMsg('Added to cart!')
+        setIsInCart(true)
+        window.dispatchEvent(new CustomEvent('cart:updated'))
+        router.refresh()
+        setTimeout(() => setCartMsg(null), 3000)
+      }
     } catch (err) {
       const e = err as { message?: string; code?: string }
       const msg = e?.message ?? String(err)
@@ -128,7 +157,7 @@ export default function ProductDetailClient({ product, relatedProducts, collecti
               ))}
             </div>
             <div className="col-span-10">
-              <div className="aspect-[4/5] bg-[#f6f3f2] rounded-xl overflow-hidden relative">
+              <div className="aspect-square bg-[#f6f3f2] rounded-xl overflow-hidden relative">
                 {mainImage
                   ? <Image src={mainImage} alt={product.name} fill className="object-cover" priority />
                   : <div className="w-full h-full flex items-center justify-center text-[#827470]">No image available</div>
@@ -213,27 +242,28 @@ export default function ProductDetailClient({ product, relatedProducts, collecti
           )}
 
           {/* Add to cart */}
-          <div className="flex gap-3 sm:gap-4 mb-8 sm:mb-10">
-            <button
-              onClick={handleAddToCart}
-              disabled={isAddingToCart || !selectedVariant}
-              className="flex-[3] text-white py-4 sm:py-5 rounded-xl font-bold text-base sm:text-lg shadow-sm hover:opacity-90 active:scale-[0.98] disabled:opacity-50 transition-all"
-              style={{ background: 'linear-gradient(135deg, #74554b 0%, #8f6d63 100%)', fontFamily: 'Epilogue, sans-serif' }}
-            >
-              {isAddingToCart ? 'Adding…' : 'Add to Cart'}
-            </button>
-            <button
-              onClick={() => setIsCollectionModalOpen(true)}
-              className="flex-1 bg-[#eae7e7] text-[#1b1c1c] py-4 sm:py-5 rounded-xl flex items-center justify-center hover:bg-[#e5e2e1] transition-colors"
-              title="Save to Collection"
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
-              </svg>
-            </button>
-            <div className="flex-1 flex items-center justify-center">
-              <WishlistButton productId={product.id} size="md" />
-            </div>
+          <div className="flex flex-col gap-3 mb-8 sm:mb-10">
+            {isInCart ? (
+              <Link
+                href="/cart"
+                className="w-full flex items-center justify-center gap-2 text-white py-4 sm:py-5 rounded-xl font-bold text-base sm:text-lg shadow-sm hover:opacity-90 transition-all"
+                style={{ background: 'linear-gradient(135deg, #4a7c59 0%, #5a9468 100%)', fontFamily: 'Epilogue, sans-serif' }}
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                Already in Cart — View Cart
+              </Link>
+            ) : (
+              <button
+                onClick={handleAddToCart}
+                disabled={isAddingToCart || !selectedVariant}
+                className="w-full text-white py-4 sm:py-5 rounded-xl font-bold text-base sm:text-lg shadow-sm hover:opacity-90 active:scale-[0.98] disabled:opacity-50 transition-all"
+                style={{ background: 'linear-gradient(135deg, #74554b 0%, #8f6d63 100%)', fontFamily: 'Epilogue, sans-serif' }}
+              >
+                {isAddingToCart ? 'Adding…' : 'Add to Cart'}
+              </button>
+            )}
           </div>
 
           {/* Features */}
@@ -319,12 +349,6 @@ export default function ProductDetailClient({ product, relatedProducts, collecti
         </section>
       )}
 
-      <CollectionModal
-        productId={product.id}
-        isOpen={isCollectionModalOpen}
-        onClose={() => setIsCollectionModalOpen(false)}
-        collections={collections}
-      />
     </main>
   )
 }

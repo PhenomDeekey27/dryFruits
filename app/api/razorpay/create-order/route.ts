@@ -2,8 +2,19 @@ import { NextRequest, NextResponse } from 'next/server'
 import Razorpay from 'razorpay'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 
+export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
+
 export async function POST(request: NextRequest) {
   try {
+    const keyId = process.env.RAZORPAY_KEY_ID
+    const keySecret = process.env.RAZORPAY_KEY_SECRET
+
+    if (!keyId || !keySecret) {
+      console.error('Razorpay env vars missing: RAZORPAY_KEY_ID or RAZORPAY_KEY_SECRET not set')
+      return NextResponse.json({ error: 'Payment service not configured' }, { status: 500 })
+    }
+
     const supabase = await createServerSupabaseClient()
     const { data: { user } } = await supabase.auth.getUser()
 
@@ -17,11 +28,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid amount' }, { status: 400 })
     }
 
-    // Initialize Razorpay inside handler (avoid build-time initialization)
-    const razorpay = new Razorpay({
-      key_id: process.env.RAZORPAY_KEY_ID!,
-      key_secret: process.env.RAZORPAY_KEY_SECRET!,
-    })
+    const razorpay = new Razorpay({ key_id: keyId, key_secret: keySecret })
 
     // Razorpay expects amount in paise (1 INR = 100 paise)
     const order = await razorpay.orders.create({

@@ -31,9 +31,14 @@ export default function ProductCard({ product }: { product: PublicProduct }) {
 
     setAdding(true)
     try {
-      await addToCart(product.id, product.variantId, 1)
-      toast('Added to cart')
-      router.refresh()
+      const result = await addToCart(product.id, product.variantId, 1)
+      if (result.alreadyInCart) {
+        toast('Already in your cart')
+      } else {
+        toast('Added to cart')
+        window.dispatchEvent(new CustomEvent('cart:updated'))
+        router.refresh()
+      }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : ''
       if (msg.includes('Must be logged in')) {
